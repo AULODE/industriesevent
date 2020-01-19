@@ -1,0 +1,199 @@
+<?xml version="1.0"?>
+<odoo>
+	<data>
+		<template id="ev_assets_frontend" inherit_id="website.assets_frontend">
+			<xpath expr="." position="inside">
+				 <!-- <link rel="stylesheet" href="/event_attendee_meeting/static/src/css/custom.css"/> -->
+				 <script src="/event_attendee_meeting/static/src/js/custom.js" type="text/javascript"></script>
+			</xpath>
+		</template>
+
+		<template id="registration_template1" inherit_id="website_event_sale.registration_template">
+			<xpath expr="//div/span" position="after">
+				<a t-if="event.is_participating"  t-att-href="'/event/attendees/%s' % event.id" role="button" class="btn btn-primary">See who else is coming </a>
+				<a style="margin: 0% 1%;" t-if="event.is_participating" t-att-href="'/event/meetings/%s' % event.id" role="button" class="btn btn-primary">My Meetings</a>
+			</xpath>
+		</template>
+
+		<template id="datetime" name="DateTime box">
+			<div class="form-group">
+				
+			</div>
+		</template>
+
+
+		<template id="attendees" name="attendees list">
+			<t t-call="website.layout">
+				<div id="wrap">
+					<div class="container" style="margin: 3% auto;">
+						<div class="col-md-12">
+							<h2 class="text-center">Attendees</h2>
+						</div>
+						<div class="col-md-12">
+							<t t-if="registrations" t-call="portal.portal_table">
+								<thead>
+									<tr class="active">
+										<th class="text-center">Name</th>
+										<!-- <th class="text-right">Email</th> -->
+										<th class="text-center">Schedule A Meeting</th>
+									</tr>
+								</thead>
+								<t t-foreach="registrations" t-as="reg">
+									<tr t-if="request.env.user.partner_id.id != reg.partner_id.id">
+										<td class="text-center" t-att-id='reg.id'>
+											<span class="a_name" t-field="reg.name"/>
+										</td>
+										<!-- <td class="text-right" t-att-id='reg.id'>
+											<span class="a_email" t-field="reg.email"/></td> -->
+										<td class="text-center">
+											<button t-att-id='reg.id' type="button" class="open-meeting btn btn-primary" data-toggle="modal" data-target="#getmeeting">
+												Want to Meet ?
+											</button>
+											<span style="display:none;"  class="start_date" t-esc='start_date'/>
+											<span style="display:none;"  class="end_date" t-esc='end_date'/>
+										</td>
+
+									</tr>
+								</t>
+							</t>
+						</div>
+						<div class="modal fade" id="getmeeting" tabindex="-1" role="dialog" aria-labelledby="getmeeting" aria-hidden="true">
+							<div class="modal-dialog" role="document">
+								<div class="modal-content" >
+									<div class="modal-header">
+										<h5 class="modal-title" id="exampleModalLabel">Create Meeting</h5>
+										<button type="button" class="close" data-dismiss="modal" style="color: red;" aria-label="Close">X</button>
+									</div>
+									<div class="modal-body">
+										<div class="col-md-12">
+										<form action="/create/attendee/meeting" style="min-height: 300px;" method="post" enctype="multipart/form-data">
+											<input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+											<table style="min-width: 80%;margin: auto;">
+												<tr>
+													<td style="font-weight: bold;line-height: 2rem;">Time:</td>
+													<td>
+														<!-- <t t-call="event_attendee_meeting.datetime"/> -->
+														<div class="input-group date o_survey_form_date" t-attf-id="raghav" data-target-input="nearest">
+															<input style="position: unset;margin-left: 0%;"  type="text" class="form-control o_website_form_input  form-group row form-field datetimepicker-input o_survey_question_datetime" name="meeting_time" required="" data-question-type="datetime" t-attf-data-target="#raghav" t-att-name="prefix"></input>
+															<div class="input-group-append" t-attf-data-target="#raghav" data-toggle="datetimepicker">
+																<div class="input-group-text"><i class="fa fa-calendar"></i></div>
+															</div>
+														</div>
+													</td>
+												</tr>
+												<tr>
+													<td style="font-weight: bold;    line-height: 2rem;">Name:</td>
+													<td class="attendee_name"></td>
+												</tr>
+												<!-- <tr>
+													<td style="font-weight: bold;line-height: 2rem;">Email:</td>
+													<td class="attendee_email"></td>
+												</tr> -->
+												<tr>
+													<td style="font-weight: bold;line-height: 2rem;">Subject:</td>
+													<td>
+														<textarea class="form-control o_website_form_input meeting_desc" name="meeting_desc" required="" placeholder="Any note..."/>
+													</td>
+												</tr>
+											</table>
+											<span class="reg_id"></span>
+											<input style="display: none;"  type="text" class="form-control o_website_form_input reg_record form-group row form-field" name="reg_record"></input>
+											<input style="display: none;"  type="text" class="form-control o_website_form_input reg_time form-group row form-field" name="reg_time"></input>
+											<button style="float: right;margin-top: 17%;" type="submit" class="create_meeting btn btn-primary">Create</button>
+										</form>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				  </div>
+			  </t>
+		</template>
+
+		<template id="event_meetings" name="event meetings list">
+			<t t-call="website.layout">
+				<div id="wrap">
+					<div class="container" style="margin: 3% auto;">
+						<div class="col-md-12">
+							<h2 class="text-center">Meetings</h2>
+						</div>
+						<div class="col-md-12">
+							<t t-if="events_meetings" t-call="portal.portal_table">
+								<thead>
+									<tr class="active">
+										<th class="text-left">Name</th>
+										<th class="text-center">Host</th>
+										<th class="text-center">Description</th>
+										<th class="text-center">Date/Time</th>
+										<th class="text-right">Attendee</th>
+										<th class="text-right">Status</th>
+										<th class="text-right">Meeting Completed</th>
+									</tr>
+								</thead>
+								<t t-foreach="events_meetings" t-as="ev">
+									<tr>
+										<td class="text-left" t-att-id='ev.id'>
+											<span class="ev_name" t-field="ev.name"/>
+										</td>
+										<td class="text-center" t-att-id='ev.id'>
+											<span class="ev_name" t-field="ev.user_id.name"/>
+										</td>
+										<td class="text-center" t-att-id='ev.id'>
+											<span class="ev_desc" t-field="ev.description"/></td>
+										<td class="text-center" t-att-id='ev.id'>
+											<span class="ev_time" t-field="ev.start_datetime"/></td>
+										<td class="text-right" t-att-id='ev.id'>
+											<span class="other_attendee" t-field="ev.other_attendee"/></td>
+										<td class="text-right" t-att-id='ev.id'>
+											<span class="other_attendee_status" t-field="ev.other_attendee_status"/></td>
+										<td class="text-right" t-att-id='ev.id'>
+											<t t-if="ev.completed">Yes</t>
+											<t t-else=""><a t-att-id='ev.id' role="button"  t-att-href="'/meeting/completed/%s' % ev.id" class="complete-meeting btn btn-primary" >Completed ?</a></t>
+											
+										</td>
+									</tr>
+								</t>
+							</t>
+							<t t-else="">
+								<div class="text-center" >
+									<span style="font-weight:bold;font-size:20px;">No meetings</span>
+								</div>
+								
+							</t>
+						</div>
+						
+					</div>
+				  </div>
+			  </t>
+		</template>
+
+		<template id="created_meeting_success" name="Meeting Successfully Created">
+			<t t-call="website.layout">
+				<div id="wrap">
+					<div class="container">
+						<div class="col-lg-12">
+							<div class="alert alert-success" style="margin: 10%;">
+								Meeting Successfully Created.
+							</div>
+						</div>
+					</div>
+				</div>
+			</t>
+		</template>
+
+		<template id="complete_meeting_success" name="Meeting Successfully Completed">
+			<t t-call="website.layout">
+				<div id="wrap">
+					<div class="container">
+						<div class="col-lg-12">
+							<div class="alert alert-success" style="margin: 10%;">
+								Meeting Successfully Completed.
+							</div>
+						</div>
+					</div>
+				</div>
+			</t>
+		</template>
+	</data>
+</odoo>
