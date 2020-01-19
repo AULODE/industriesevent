@@ -1,0 +1,106 @@
+<?xml version="1.0"?>
+<odoo>
+	<data>
+
+		<record id="attendee_meeting_tree" model="ir.ui.view">
+			<field name="name">view.attendee.meeting.tree</field>
+			<field name="model">attendee.meeting</field>
+			<field name="arch" type="xml">
+				<tree string="Attendee Meeting" >
+					<field name="time" /> 
+					<field name="event_id" />   
+					<field name="partner_id"/>
+					<field name="sender_id"/>
+					<field name="subject"/>
+					<field name="state" />  
+				</tree>
+			</field>
+		</record>
+
+		<record id="attendee_meeting_form_view" model="ir.ui.view">
+			<field name="name">attendee.meeting.form.view</field>
+			<field name="model">attendee.meeting</field>
+			<field name="arch" type="xml">
+				<form string="Attendee Meeting" >
+					<header>
+						<field name="state" nolabel="1" colspan="2" widget="statusbar" statusbar_visible="draft,accept,rescheduled,decline"/>
+					</header>
+					<sheet>
+						<group >
+							<field name="time" /> 
+							<field name="event_id" />   
+							<field name="partner_id"/>
+							<field name="sender_id"/>
+							<field name="subject"/>
+						</group>
+					</sheet>
+					<div class="oe_chatter">
+						<field name="message_follower_ids" widget="mail_followers"/>
+						<field name="activity_ids" widget="mail_activity"/>
+						<field name="message_ids" widget="mail_thread"/>
+					</div>
+				</form>
+			</field>
+		</record>
+
+		<record model="ir.actions.act_window" id="action_attendee_meeting">
+			<field name="name">Attendee Meeting</field>
+			<field name="res_model">attendee.meeting</field>
+			<field name="view_mode">tree,form</field>
+			<field name="type">ir.actions.act_window</field>
+		</record>
+
+		<record id="event_registration_form_view" model="ir.ui.view">
+				<field name="name">event.registration.form</field>
+				<field name="model">event.registration</field>
+				<field name="inherit_id" ref="event.view_event_registration_form" />
+				<field name="arch" type="xml">
+					<xpath expr="//sheet/group" position="before">
+						<div class="oe_button_box" name="button_box" groups="base.group_user">
+							<button type="object"
+								name="action_view_meetings"
+								class="oe_stat_button"
+								icon="fa-clock-o"
+								attrs="{'invisible': [('meeting_count', '=', 0)]}">
+								<field name="meeting_count" widget="statinfo"/>
+							</button>
+						</div>
+						
+					</xpath> 
+			</field>
+		</record>
+
+		<record id="event_event_form_view_inherit_meeting" model="ir.ui.view">
+				<field name="name">event.event.form.inherit.meeting</field>
+				<field name="model">event.event</field>
+				<field name="inherit_id" ref="event.view_event_form" />
+				<field name="arch" type="xml">
+					<div class="oe_button_box" position="inside">
+						<button type="object"
+							name="action_view_event_meetings"
+							class="oe_stat_button"
+							icon="fa-clock-o"
+							attrs="{'invisible': [('meeting_count', '=', 0)]}">
+							<field name="meeting_count" widget="statinfo"/>
+						</button>
+					</div>
+			</field>
+		</record>
+
+		<record id="calendar_event_form_view_inherit_meeting" model="ir.ui.view">
+				<field name="name">calendar.event.form.inherit.meeting</field>
+				<field name="model">calendar.event</field>
+				<field name="inherit_id" ref="calendar.view_calendar_event_form" />
+				<field name="arch" type="xml">
+					<field name="event_tz" position="after">
+						<field name="event_id" readonly="1"/>
+						<field name="event_reg_id" readonly="1"/>
+						<field name="completed" readonly="1" attrs="{'invisible': [('event_id', '=', False)]}"/>
+						<field name="other_attendee_status" readonly="1" attrs="{'invisible': [('event_id', '=', False)]}"/>
+						<field name="other_attendee" readonly="1" attrs="{'invisible': [('event_id', '=', False)]}"/>
+					</field>
+			</field>
+		</record>
+
+	</data>
+</odoo>
