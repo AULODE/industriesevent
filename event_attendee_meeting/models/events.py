@@ -16,8 +16,8 @@ class CalendarEvent(models.Model):
 	event_reg_id = fields.Many2one('event.registration',string="Event registration")
 	event_id = fields.Many2one('event.event',string='Event')
 	completed = fields.Boolean(string='Completed')
-	other_attendee_status = fields.Selection(STATE_SELECTION, string='Attendee Status Info',compute='_compute_attendee_status')
-	other_attendee = fields.Many2one('res.partner',string='Attendee',compute='_compute_attendee_status')
+	other_attendee_status = fields.Selection(STATE_SELECTION, string='Other Attendee Status',compute='_compute_attendee_status')
+	other_attendee = fields.Many2one('res.partner',string='Other Attendee',compute='_compute_attendee_status')
 
 	@api.depends('attendee_ids')
 	def _compute_attendee_status(self):
@@ -34,6 +34,7 @@ class CalendarEvent(models.Model):
 
 class AttendeeMeeting(models.Model):
 	_name = 'attendee.meeting'
+	_description = "Attendee Meetingss"
 	_rec_name = 'partner_id'
 	_inherit = ['portal.mixin', 'mail.thread', 'mail.activity.mixin', 'utm.mixin']
 

@@ -54,17 +54,28 @@ class WebsiteEventSaleController(WebsiteEventSaleController):
 	@http.route(['/create/attendee/meeting'], type='http',methods=['POST'], auth="public", website=True)
 	def attendees_meeting(self, **post):
 		dt = post.get('reg_time')
+		dt_end = post.get('reg_end_time')
 		rec_id = post.get('reg_record')
-		if dt and rec_id:
+		if dt and dt_end and rec_id:
 			user_tz = request._context.get('tz')
 			datetime_object = datetime.strptime(dt, '%Y-%m-%d %H:%M:%S')
+			timezone = request.session['timezone']
+			tz_session = pytz.timezone(timezone)
+			date_start = tz_session.localize(fields.Datetime.from_string(dt)).astimezone(pytz.utc)
+			date_end = tz_session.localize(fields.Datetime.from_string(dt_end)).astimezone(pytz.utc)
 			reg_rec = request.env['event.registration'].sudo().browse(int(rec_id))
-
+			
 			request.env['calendar.event'].sudo().create({
 				'name': 'meeting with :'+ str(request.env.user.partner_id.name),
 				'description': post.get('meeting_desc'),
-				'start': fields.Datetime.to_string(datetime_object),
-				'stop': fields.Datetime.to_string(datetime_object + timedelta(hours=1)),
+				'start': date_start.strftime(dtf),
+				'start_date': date_start.strftime(dtf),
+				'start_datetime': date_start.strftime(dtf),
+				'stop': date_end.strftime(dtf),
+				'stop_datetime': date_end.strftime(dtf),
+				'allday': False,
+				# 'start': fields.Datetime.to_string(datetime_object),
+				# 'stop': fields.Datetime.to_string(datetime_object + timedelta(hours=1)),
 				'user_id': request.env.user.id,
 				'partner_ids': [(6,0,[request.env.user.partner_id.id,reg_rec.partner_id.id])],
 				'event_reg_id' : reg_rec.id,

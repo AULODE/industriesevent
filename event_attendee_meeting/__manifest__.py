@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
 {
 	"name" : "Event's Attendee Meeting Management",
-	"version" : "13.19.1.2020",
+	"version" : "13.0.0.0",
 	"depends" : ['base','web','event','calendar','website_event','website_event_sale'],
-	"author": "Kiran",
+	"author": "Raghav",
 	"website" : "",
 	"category" : "",
 	"description": """ Event's Attendee Meeting Management""",

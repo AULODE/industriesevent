@@ -66,16 +66,28 @@
 									</div>
 									<div class="modal-body">
 										<div class="col-md-12">
-										<form action="/create/attendee/meeting" style="min-height: 300px;" method="post" enctype="multipart/form-data">
+										<form action="/create/attendee/meeting" style="min-height: 350px;" method="post" enctype="multipart/form-data">
 											<input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
-											<table style="min-width: 80%;margin: auto;">
+											<table style="    height: 200px;min-width: 80%;margin: auto;">
 												<tr>
-													<td style="font-weight: bold;line-height: 2rem;">Time:</td>
+													<td style="font-weight: bold;line-height: 2rem;">Start Time:</td>
 													<td>
 														<!-- <t t-call="event_attendee_meeting.datetime"/> -->
 														<div class="input-group date o_survey_form_date" t-attf-id="raghav" data-target-input="nearest">
-															<input style="position: unset;margin-left: 0%;"  type="text" class="form-control o_website_form_input  form-group row form-field datetimepicker-input o_survey_question_datetime" name="meeting_time" required="" data-question-type="datetime" t-attf-data-target="#raghav" t-att-name="prefix"></input>
+															<input style="position: unset;margin-left: 0%;"  type="text" class="form-control meeting_time o_website_form_input  form-group row form-field datetimepicker-input o_survey_question_datetime" name="meeting_time" required="" data-question-type="datetime" t-attf-data-target="#raghav" t-att-name="prefix"></input>
 															<div class="input-group-append" t-attf-data-target="#raghav" data-toggle="datetimepicker">
+																<div class="input-group-text"><i class="fa fa-calendar"></i></div>
+															</div>
+														</div>
+													</td>
+												</tr>
+												<tr>
+													<td style="font-weight: bold;line-height: 2rem;">End Time:</td>
+													<td>
+														<!-- <t t-call="event_attendee_meeting.datetime"/> -->
+														<div class="input-group date o_survey_form_date" t-attf-id="end_date_pck" data-target-input="nearest">
+															<input style="position: unset;margin-left: 0%;"  type="text" class="form-control meeting_end_time o_website_form_input  form-group row form-field datetimepicker-input o_survey_question_datetime" name="meeting_end_time" required="" data-question-type="datetime" t-attf-data-target="#end_date_pck" t-att-name="prefix"></input>
+															<div class="input-group-append" t-attf-data-target="#end_date_pck" data-toggle="datetimepicker">
 																<div class="input-group-text"><i class="fa fa-calendar"></i></div>
 															</div>
 														</div>
@@ -99,6 +111,7 @@
 											<span class="reg_id"></span>
 											<input style="display: none;"  type="text" class="form-control o_website_form_input reg_record form-group row form-field" name="reg_record"></input>
 											<input style="display: none;"  type="text" class="form-control o_website_form_input reg_time form-group row form-field" name="reg_time"></input>
+											<input style="display: none;"  type="text" class="form-control o_website_form_input reg_end_time form-group row form-field" name="reg_end_time"></input>
 											<button style="float: right;margin-top: 17%;" type="submit" class="create_meeting btn btn-primary">Create</button>
 										</form>
 										</div>
